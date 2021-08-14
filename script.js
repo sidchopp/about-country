@@ -36,13 +36,5 @@ const getCountryData = function (country) {
 getCountryData('canada');
 getCountryData("India");
 
-// const request = new XMLHttpRequest();
-// request.open('GET', 'https://restcountries.eu/rest/v2/name/india?fullText=true');
-// request.send();
 
-
-// request.addEventListener('load', function () {
-//   //const [data] = JSON.parse(this.responseText);
-//   console.log(this.responseText);
-// })
 
