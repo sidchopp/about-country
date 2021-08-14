@@ -5,10 +5,10 @@ const countriesContainer = document.querySelector('.countries');
 
 ///////////////////////////////////////
 
-// old way of using XML
+//old way of using XML
 const getCountryData = function (country) {
   const request = new XMLHttpRequest();
-  request.open('GET', `https://restcountries.eu/rest/v2/name/${country}`);
+  request.open('GET', `https://restcountries.eu/rest/v2/name/${country}?fullText=true`);
   request.send();
 
   request.addEventListener('load', function () {
@@ -21,7 +21,7 @@ const getCountryData = function (country) {
           <div class="country__data">
             <h3 class="country__name">${data.name}</h3>
             <h4 class="country__region">${data.region}</h4>
-            <p class="country__row"><span>👫</span>${(+data.population / 1000000).toFixed(1)}</p>
+            <p class="country__row"><span>👫</span>${(+data.population / 1000000).toFixed(1)} MM</p>
             <p class="country__row"><span>🗣️</span>${data.languages[0].name}</p>
             <p class="country__row"><span>💰</span>${data.currencies[0].name}</p>
           </div>
@@ -32,7 +32,17 @@ const getCountryData = function (country) {
   })
 };
 
-getCountryData('usa');
+
 getCountryData('canada');
 getCountryData("India");
+
+// const request = new XMLHttpRequest();
+// request.open('GET', 'https://restcountries.eu/rest/v2/name/india?fullText=true');
+// request.send();
+
+
+// request.addEventListener('load', function () {
+//   //const [data] = JSON.parse(this.responseText);
+//   console.log(this.responseText);
+// })
 
