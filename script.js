@@ -79,9 +79,22 @@ const renderCountry = function (data, className = '') {
 // with arrow function
 
 const getCountryData = function (country) {
+  //1st AJAX call for counrtry 1
   fetch(`https://restcountries.eu/rest/v2/name/${country}?fullText=true`)
     .then(response => response.json())
-    .then(data => renderCountry(data[0]))
+    .then(data => {
+      renderCountry(data[0])
+      const neighbour = data[0].borders[0];
+      console.log(neighbour);
+
+      if (!neighbour) return;
+
+      // 2nd AJAX call for country 2 (or neighbouring country)
+      return fetch(`https://restcountries.eu/rest/v2/name/${neighbour}?fullText=true`);
+    })
+    .then(response => response.json())
+    .then(data => renderCountry(data, 'neighbour'))
+
 };
 
-getCountryData('India');
+getCountryData('canada');
