@@ -182,7 +182,7 @@ const whereAmI = async function () {
     console.error(`${err}`)
     // Display the error message, if any, on UI
     //return renderError(`Something is wrong😞 : ${err.message}`);
-    return renderError(`Something is wrong 😞. Please refresh the Page`);
+    return renderError(`Something is wrong 😞.${err.message}. Please refresh the Page`);
 
   }
 }
