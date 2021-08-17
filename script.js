@@ -49,7 +49,7 @@ const renderCountry = function (data, className = '') {
     <img class="country__img" src="${data.flag}" />
     <div class="country__data">
       <h3 class="country__name">${data.name}</h3>
-      <h3 class="country__capital">${data.capital}</h3>
+      <h3 class="country__capital">(${data.capital})</h3>
       <h4 class="country__region">${data.region}</h4>
      <p class="country__row"><span>👫</span>${(+data.population / 1000000).toFixed(1)}</p>
       <p class="country__row"><span>🗣️</span>${data.languages[0].name}</p>
@@ -59,6 +59,10 @@ const renderCountry = function (data, className = '') {
   countriesContainer.insertAdjacentHTML('beforeend', html);
   countriesContainer.style.opacity = 1;
 };
+
+const errorMessage = function () {
+  return 'ERROR!!'
+}
 
 // with function expression
 // const getCountryData = function (country) {
@@ -129,8 +133,14 @@ const renderCountry = function (data, className = '') {
 
 // whereAmI('india')
 
-////////////////// Using ASYNC/AWAIT, geolocation and reverse geocoding all together
+////////////////// Using ASYNC/AWAIT, geolocation , reverse geocoding, try/catch block all together
 ///In total we have 5 promises now( or 5 awaits) in a single ASYNC function!!!!
+
+// the error message function for try/catch block
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+  countriesContainer.style.opacity = 1;
+};
 
 // Promisifying the Geolocation API
 const getPosition = function () {
@@ -140,24 +150,33 @@ const getPosition = function () {
 };
 
 const whereAmI = async function () {
-  // Geo Location
-  const pos = await getPosition();
-  console.log('value of my position:', pos);
-  // we are changing the names by de structuring the pos object that we receive
-  const { latitude: lat, longitude: lng } = pos.coords;
-  console.log('My position:', lat, lng);
-  // Reverse geocoding
-  const responseGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
-  const dataGeo = await responseGeo.json();
-  console.log('Response from dataGeo:', dataGeo);
+  try {
+    // Geo Location
+    const pos = await getPosition();
+    console.log('value of my position:', pos);
+    // we are changing the names by de structuring the pos object that we receive
+    const { latitude: lat, longitude: lng } = pos.coords;
+    console.log('My position:', lat, lng);
+    // Reverse geocoding
+    const responseGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+    const dataGeo = await responseGeo.json();
+    console.log('Response from dataGeo:', dataGeo);
 
-  // Country data we receive directly from dataGeo
-  const response = await fetch(`https://restcountries.eu/rest/v2/name/${dataGeo.country}?fullText=true`);
-  console.log(response);
-  const data = await response.json();
-  console.log(data);
-  // we write data[0] below because from the 'data' array, we just want the 0th index
-  renderCountry(data[0]);
+    // Country data we receive directly from dataGeo
+    const response = await fetch(`https://restcountries.eu/rest/v2/name/${dataGeo.country}?fullText=true`);
+    console.log(response);
+    const data = await response.json();
+    console.log(data);
+    // we write data[0] below because from the 'data' array, we just want the 0th index
+    renderCountry(data[0]);
+  } catch (err) {
+    // catch will get the error from try block and we will save that ACTUAL ERROR in a variable say err
+    // now the ACTUAL ERROR has a method attached to it called "message" to JUST show the error message
+    //console.log('There is an error:', err.message);
+    // Display the error, if any, on UI
+    //return renderError(`Something is wrong😞 : ${err.message}`);
+    return renderError(`Something is wrong 😞. Please refresh the Page`);
+  }
 }
 
 // calling the function without any parameter, as we are getting the info directly from geolocation now
