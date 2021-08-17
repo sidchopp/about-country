@@ -112,13 +112,47 @@ const renderCountry = function (data, className = '') {
 //getCountryData('India');
 
 
+
 ///////////////////// Using ASYNC/AWAIT function for AJAX call
 // async will run in the background and once its done it will return a PROMISE like FETCH
 // await keyword will stop the async function from running till the promise is fulfilled or the data has been fetched like in this case
-// We are storing the ACTUAL RESPONSE from the promise in a variable 'response' or 'res' or whatever name we like
+// We are storing the ACTUAL RESPONSE from the promise( or the fulfilled value of the promise) in a variable 'response' or 'res' or whatever name we like
 //ASYNC?AWAIT is just a SYNTACTIC SUGAR over THEN method. Behind the scenes its just THEN
-const whereAmI = async function (country) {
-  const response = await fetch(`https://restcountries.eu/rest/v2/name/${country}?fullText=true`);
+// const whereAmI = async function (country) {
+//   const response = await fetch(`https://restcountries.eu/rest/v2/name/${country}?fullText=true`);
+//   console.log(response);
+//   const data = await response.json();
+//   console.log(data);
+//   // we write data[0] below because from the 'data' array, we just want the 0th index
+//   renderCountry(data[0]);
+// }
+
+// whereAmI('india')
+
+////////////////// Using ASYNC/AWAIT, geolocation and reverse geocoding all together
+///In total we have 5 promises now( or 5 awaits) in a single ASYNC function!!!!
+
+// Promisifying the Geolocation API
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+const whereAmI = async function () {
+  // Geo Location
+  const pos = await getPosition();
+  console.log('value of my position:', pos);
+  // we are changing the names by de structuring the pos object that we receive
+  const { latitude: lat, longitude: lng } = pos.coords;
+  console.log('My position:', lat, lng);
+  // Reverse geocoding
+  const responseGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+  const dataGeo = await responseGeo.json();
+  console.log('Response from dataGeo:', dataGeo);
+
+  // Country data we receive directly from dataGeo
+  const response = await fetch(`https://restcountries.eu/rest/v2/name/${dataGeo.country}?fullText=true`);
   console.log(response);
   const data = await response.json();
   console.log(data);
@@ -126,4 +160,5 @@ const whereAmI = async function (country) {
   renderCountry(data[0]);
 }
 
-whereAmI('india')
+// calling the function with any parameter as we are getting the info directly from geolocation now
+whereAmI();
