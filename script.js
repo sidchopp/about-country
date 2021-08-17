@@ -53,6 +53,7 @@ const renderCountry = function (data, className = '') {
       <p class="country__row"><span>👫</span>${(+data.population / 1000000).toFixed(1)} people</p>
       <p class="country__row"><span>🗣️</span>${data.languages[0].name}</p>
       <p class="country__row"><span>💰</span>${data.currencies[0].name}</p>
+      <p class="country__row"><span>Capital:</span>${data.capital}</p>
     </div>
   </article>`;
   countriesContainer.insertAdjacentHTML('beforeend', html);
@@ -62,36 +63,67 @@ const renderCountry = function (data, className = '') {
 // with function expression
 // const getCountryData = function (country) {
 //   fetch(`https://restcountries.eu/rest/v2/name/${country}?fullText=true`)
+//     //VERY IMP NOTE: This 'response' paramter is basically the name of a variable, which we have chosen, into which we are storing the ACTUAL RESPONSE from the FETCH call
 //     .then(function (response) {
-//       console.log(response);
+//       console.log('I am the value of response from fetch:', response);
 //       //JSON is a method that is available on all the response objects that we GET from FETCH
-//       //JSON itself is an asyn fn, so it will also return a promise, hence we use THEN method on its response. To read that response, we apply json on the response object
+//       //JSON itself is an asyn fn, so it will also return a promise, hence we use THEN method on its response. To read that response, we apply json method on the response object
 //       return response.json();
 //     }).then(function (data) {
-//       console.log(data);
+//       console.log('I am the value of response.json:', data);
 //       renderCountry(data[0]);
+//       const neighbour = data[0].borders[0];
+//       console.log(neighbour);
+
+//       if (!neighbour) return;
+//       return fetch(`https://restcountries.eu/rest/v2/name/${neighbour}?fullText=true`);
+//     }).then(function (response) {
+//       console.log(response);
+//       return response.json()
+//     })
+//     .then(function (data) {
+//       console.log(data[0]);
+//       renderCountry(data[0], 'neighbour')
 //     })
 // };
 
 // with arrow function
 
-const getCountryData = function (country) {
-  //1st AJAX call for counrtry 1
-  fetch(`https://restcountries.eu/rest/v2/name/${country}?fullText=true`)
-    .then(response => response.json())
-    .then(data => {
-      renderCountry(data[0]);
-      const neighbour = data[0].borders[0];
-      console.log(neighbour);
+// const getCountryData = function (country) {
+//   //1st AJAX call for counrtry 1
+//   fetch(`https://restcountries.eu/rest/v2/name/${country}?fullText=true`)
+//     .then(response => response.json())
+//     .then(data => {
+//       renderCountry(data[0]);
+//       const neighbour = data[0].borders[0];
+//       console.log(neighbour);
 
-      if (!neighbour) return;
+//       if (!neighbour) return;
 
-      // 2nd AJAX call for country 2 (or neighbouring country)
-      return fetch(`https://restcountries.eu/rest/v2/name/${neighbour}?fullText=true`);
-    })
-    .then(response => response.json())
-    .then(data => renderCountry(data[0], 'neighbour'))
+//       // 2nd AJAX call for country 2 (or neighbouring country)
+//       return fetch(`https://restcountries.eu/rest/v2/name/${neighbour}?fullText=true`);
+//     })
+//     .then(response => response.json())
+//     .then(data => renderCountry(data[0], 'neighbour'))
 
-};
+// };
 
-getCountryData('canada');
+// calling the function
+//getCountryData('India');
+
+
+///////////////////// Using ASYNC/AWAIT function for AJAX call
+// async will run in the background and once its done it will return a PROMISE like FETCH
+// await keyword will stop the async function from running till the promise is fulfilled or the data has been fetched like in this case
+// We are storing the ACTUAL RESPONSE from the promise in a variable 'response' or 'res' or whatever name we like
+//ASYNC?AWAIT is just a SYNTACTIC SUGAR over THEN method. Behind the scenes its just THEN
+const whereAmI = async function (country) {
+  const response = await fetch(`https://restcountries.eu/rest/v2/name/${country}?fullText=true`);
+  console.log(response);
+  const data = await response.json();
+  console.log(data);
+  // we write data[0] below because from the 'data' array, we just want the 0th index
+  renderCountry(data[0]);
+}
+
+whereAmI('india')
