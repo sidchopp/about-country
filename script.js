@@ -174,6 +174,9 @@ const whereAmI = async function () {
     console.log(data);
     // we write data[0] below because from the 'data' array, we just want the 0th index
     renderCountry(data[0]);
+    const city = `You are in ${dataGeo.city}, ${dataGeo.country}`;
+    console.log(city);
+    return city;
   } catch (err) {
     // catch will get the error from try block and we will save that ACTUAL ERROR in a variable say err
     // now the ACTUAL ERROR has a method attached to it called "message" to JUST show the error message
