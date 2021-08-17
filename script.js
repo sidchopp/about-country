@@ -160,5 +160,6 @@ const whereAmI = async function () {
   renderCountry(data[0]);
 }
 
-// calling the function with any parameter as we are getting the info directly from geolocation now
+// calling the function without any parameter, as we are getting the info directly from geolocation now
 whereAmI();
+
