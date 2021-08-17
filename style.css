@@ -88,6 +88,12 @@ body {
   color: #888;
 }
 
+.country__capital {
+  font-size: 1.4rem;
+  margin-bottom: 2.5rem;
+  color: #888;
+}
+
 .country__row:not(:last-child) {
   margin-bottom: 1rem;
 }
