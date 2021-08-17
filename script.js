@@ -157,13 +157,18 @@ const whereAmI = async function () {
     // we are changing the names by de structuring the pos object that we receive
     const { latitude: lat, longitude: lng } = pos.coords;
     console.log('My position:', lat, lng);
+
     // Reverse geocoding
     const responseGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+    // to handle error in fetch call. If there is error, it won't run further after this line below
+    if (!responseGeo.ok) throw new Error("Problem getting location data")
     const dataGeo = await responseGeo.json();
     console.log('Response from dataGeo:', dataGeo);
 
     // Country data we receive directly from dataGeo
     const response = await fetch(`https://restcountries.eu/rest/v2/name/${dataGeo.country}?fullText=true`);
+    // to handle error in fetch call. If there is error, it won't run further after this line below
+    if (!response.ok) throw new Error("Problem getting location data")
     console.log(response);
     const data = await response.json();
     console.log(data);
@@ -173,7 +178,7 @@ const whereAmI = async function () {
     // catch will get the error from try block and we will save that ACTUAL ERROR in a variable say err
     // now the ACTUAL ERROR has a method attached to it called "message" to JUST show the error message
     //console.log('There is an error:', err.message);
-    // Display the error, if any, on UI
+    // Display the error message, if any, on UI
     //return renderError(`Something is wrong😞 : ${err.message}`);
     return renderError(`Something is wrong 😞. Please refresh the Page`);
   }
